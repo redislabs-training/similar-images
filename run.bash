@@ -1,7 +1,7 @@
 #!/bin/bash
 ## Redis
 echo "Starting Redis ..."
-redis-server --loadmodule /home/modules/redisai.so --loadmodule /home/modules/redisgears.so Plugin /home/modules/vector_similarity.so &
+redis-server --loadmodule $BUILD_HOME/modules/redisai.so --loadmodule $BUILD_HOME/modules/redisgears.so Plugin $BUILD_HOME/modules/vector_similarity.so &
 sleep 5
 
 ## Flask

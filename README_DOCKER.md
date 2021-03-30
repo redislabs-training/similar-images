@@ -9,3 +9,4 @@ Here the steps how to build the Docker image 'similar-images':
 3. Change the directory to the the just cloned repo: `cd similar-images`
 4. Run a Docker build: `docker build --build-arg GH_USER --build-arg GH_TOKEN -t similar-images .`
 5. Start the image: `docker run -p 5000:5000 similar-images`
+6. Test it with a random image: http://localhost:5000/similar-skus?imageUrl=https://drive.google.com/uc?id=1s21uQxKQjB7CuU-svW2P0eYKsHgO6hfR

@@ -8,4 +8,4 @@ Here the steps how to build the Docker image 'similar-images':
 2. Clone the repo: `git clone git@github.com:redislabs-training/similar-images.git`
 3. Change the directory to the the just cloned repo: `cd similar-images`
 4. Run a Docker build: `docker build --build-arg GH_USER --build-arg GH_TOKEN -t similar-images .`
-5. Start the image: `docker run similar-images`
+5. Start the image: `docker run -p 5000:5000 similar-images`

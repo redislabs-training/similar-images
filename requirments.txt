@@ -1,5 +1,6 @@
 requests
 opencv-python
 redis
+redisearch
 numpy
 flask

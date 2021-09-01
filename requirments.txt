@@ -1,6 +1,6 @@
 requests
 opencv-python
 redis
-redisearch
+git+https://github.com/RediSearch/redisearch-py.git
 numpy
 flask

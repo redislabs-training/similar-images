@@ -14,6 +14,7 @@ RUN mkdir $BUILD_HOME/creds
 ## Get the sourc code
 COPY redisai $BUILD_HOME/code/RedisAI
 COPY redisearch $BUILD_HOME/code/RediSearch
+COPY similar-images $BUILD_HOME/code/similar-images
 
 # Install some packages
 RUN apt-get update
@@ -54,11 +55,6 @@ RUN make build
 RUN cp build/redisearch.so $BUILD_HOME/modules/.
 
 ##### similar-images #####
-RUN echo "Installing service dependencies ..."
-RUN cd $BUILD_HOME/code/
-WORKDIR $BUILD_HOME/code/
-RUN git clone https://github.com/redislabs-training/similar-images.git
-RUN cd $BUILD_HOME/code/similar-images
 WORKDIR $BUILD_HOME/code/similar-images
 RUN pip3 install virtualenv
 RUN virtualenv env

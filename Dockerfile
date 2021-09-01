@@ -1,10 +1,6 @@
 # Based on Redis
 FROM redis:6.2.1
 
-# Build arguments
-ARG GH_TOKEN=null
-ARG GH_USER=null
-
 # Constants
 ENV BUILD_HOME=/opt
 
@@ -21,12 +17,13 @@ RUN apt-get install -y make
 RUN apt-get install -y python3
 RUN apt-get install -y wget
 RUN apt-get install -y unzip
+RUN apt-get install -y python3-opencv
 
 # Build RedisAI
 RUN cd $BUILD_HOME/code/
 WORKDIR $BUILD_HOME/code/
 ## Get the sourc code
-RUN git clone https://github.com/RedisAI/RedisAI.git
+RUN git clone https://github.com/RedisAI/RedisAI.git --recurse-submodules
 RUN cd $BUILD_HOME/code/RedisAI
 WORKDIR $BUILD_HOME/code/RedisAI
 ## Get the referenced source code
@@ -43,43 +40,19 @@ RUN ALL=1 make -C opt clean build
 RUN cp ./bin/linux-x64-release/src/redisai.so $BUILD_HOME/modules/redisai.so
 RUN cp ./bin/linux-x64-release/src/redisai_tensorflow.so $BUILD_HOME/modules/redisai_tensorflow.so
 
-# Build RedisGears
-RUN cd $BUILD_HOME/code/
+## RediSearch ##
 WORKDIR $BUILD_HOME/code/
-RUN git clone https://github.com/RedisGears/RedisGears.git
-RUN cd $BUILD_HOME/code/RedisGears
-WORKDIR $BUILD_HOME/code/RedisGears
+RUN git clone https://github.com/RediSearch/RediSearch.git --recurse-submodules
+WORKDIR $BUILD_HOME/code/RediSearch
+RUN git checkout feature-vecsim
+WORKDIR $BUILD_HOME/code/RediSearch/deps
+RUN git submodule add -f https://github.com/RedisLabsModules/VectorSimilarity.git
 RUN git submodule update --init --recursive
+WORKDIR $BUILD_HOME/code/RediSearch
 RUN ./deps/readies/bin/getpy2
 RUN make setup
-RUN make fetch
-RUN make all
-RUN cp ./bin/linux-x64-release/redisgears.so $BUILD_HOME/modules/redisgears.so
-
-# Build VecSim
-## Prepare creds
-RUN cd $BUILD_HOME/creds/
-WORKDIR $BUILD_HOME/creds/
-RUN echo '#!/bin/bash' > github.bash
-RUN echo "echo username=${GH_USER}" >> github.bash
-RUN echo "echo password=${GH_TOKEN}" >> github.bash
-RUN chmod +x github.bash
-RUN cd $BUILD_HOME/code/
-WORKDIR $BUILD_HOME/code/
-RUN git -c credential.helper="$BUILD_HOME/creds/github.bash" clone https://github.com/RedisGears/VecSim.git
-RUN rm $BUILD_HOME/creds/github.bash
-RUN cd $BUILD_HOME/code/VecSim
-WORKDIR $BUILD_HOME/code/VecSim
-RUN git submodule update --init --recursive
-RUN sed -i 's/#define VEC_SIZE 128/#define VEC_SIZE 1280/g' ./src/vector_similarity.c
-RUN sed -i 's/#define VEC_HOLDER_SIZE 1024 * 1024/#define VEC_HOLDER_SIZE 100 * 1024/g' ./src/vector_similarity.c
-RUN cd $BUILD_HOME/code/VecSim/deps/OpenBLAS/
-WORKDIR $BUILD_HOME/code/VecSim/deps/OpenBLAS/
-RUN make
-RUN cd $BUILD_HOME/code/VecSim/src/
-WORKDIR $BUILD_HOME/code/VecSim/src/
-RUN make
-RUN cp vector_similarity.so $BUILD_HOME/modules/vector_similarity.so
+RUN make build 
+RUN cp build/redisearch.so $BUILD_HOME/modules/.
 
 # Build the service
 RUN echo "Installing service dependencies ..."

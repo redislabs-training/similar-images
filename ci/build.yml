@@ -1,0 +1,14 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: concourse/oci-build-task
+run:
+  path: build
+inputs:
+  - name: similar-images
+  - name: redisearch-repo
+  - name: redisai-repo
+outputs:
+  - name: image

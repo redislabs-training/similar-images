@@ -4,12 +4,10 @@ FROM redis:6.2.1
 # Constants
 ENV BUILD_HOME=/opt
 
-
 # Prepare some folders
 RUN mkdir $BUILD_HOME/code
 RUN mkdir $BUILD_HOME/modules
 RUN mkdir $BUILD_HOME/creds
-
 
 ## Get the sourc code
 COPY redisai $BUILD_HOME/code/RedisAI

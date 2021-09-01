@@ -35,6 +35,10 @@ except:
 
 app = Flask(__name__)
 
+@app.route('/healthcheck')
+def healthcheck():
+    return 'alive!'
+
 @app.route('/items', methods=['POST'])
 def create_item():
     vector = image_url_to_vector(request.json['imageUrl'])
@@ -102,3 +106,4 @@ def get_request_similar_skus():
         })
 
     return result
+

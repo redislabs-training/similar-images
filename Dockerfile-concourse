@@ -12,8 +12,8 @@ RUN mkdir $BUILD_HOME/creds
 
 
 ## Get the sourc code
-COPY redisai-repo $BUILD_HOME/code/RedisAI
-COPY redisearch-repo $BUILD_HOME/code/RediSearch
+COPY redisai $BUILD_HOME/code/RedisAI
+COPY redisearch $BUILD_HOME/code/RediSearch
 
 # Install some packages
 RUN apt-get update

@@ -10,7 +10,7 @@ run:
   path: build
 inputs:
   - name: similar-images
-  - name: redisearch-repo
-  - name: redisai-repo
+  - name: redisearch
+  - name: redisai
 outputs:
   - name: image

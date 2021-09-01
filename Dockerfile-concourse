@@ -4,10 +4,16 @@ FROM redis:6.2.1
 # Constants
 ENV BUILD_HOME=/opt
 
+
 # Prepare some folders
 RUN mkdir $BUILD_HOME/code
 RUN mkdir $BUILD_HOME/modules
 RUN mkdir $BUILD_HOME/creds
+
+
+## Get the sourc code
+COPY redisai-repo $BUILD_HOME/code/RedisAI
+COPY redisearch-repo $BUILD_HOME/code/RediSearch
 
 # Install some packages
 RUN apt-get update
@@ -19,40 +25,35 @@ RUN apt-get install -y wget
 RUN apt-get install -y unzip
 RUN apt-get install -y python3-opencv
 
-# Build RedisAI
-RUN cd $BUILD_HOME/code/
-WORKDIR $BUILD_HOME/code/
-## Get the sourc code
-COPY RedisAI .
-COPY RediSearch .
-
-RUN cd $BUILD_HOME/code/RedisAI
+##### RedisAI ######
 WORKDIR $BUILD_HOME/code/RedisAI
-## Get the referenced source code
+## Setup tensorflow etc
 RUN ./get_deps.sh cpu
-RUN cd $BUILD_HOME/code/RedisAI/opt
-WORKDIR $BUILD_HOME/code/RedisAI/opt
 ## Install system requirements
+WORKDIR $BUILD_HOME/code/RedisAI/opt
 RUN ./readies/bin/getpy3
 RUN ./system-setup.py
-## Build Redis AI
-RUN cd $BUILD_HOME/code/RedisAI
+## Build 
 WORKDIR $BUILD_HOME/code/RedisAI
 RUN ALL=1 make -C opt clean build
+## Put binaries in modules folder
 RUN cp ./bin/linux-x64-release/src/redisai.so $BUILD_HOME/modules/redisai.so
 RUN cp ./bin/linux-x64-release/src/redisai_tensorflow.so $BUILD_HOME/modules/redisai_tensorflow.so
 
-## RediSearch ##
+##### RediSearch #####
+## Fix/get dependancies
 WORKDIR $BUILD_HOME/code/RediSearch/deps
 RUN git submodule add -f https://github.com/RedisLabsModules/VectorSimilarity.git
 RUN git submodule update --init --recursive
+RUN ./readies/bin/getpy2
+## Build
 WORKDIR $BUILD_HOME/code/RediSearch
-RUN ./deps/readies/bin/getpy2
 RUN make setup
 RUN make build 
+## Put bin in module folder
 RUN cp build/redisearch.so $BUILD_HOME/modules/.
 
-# Build the service
+##### similar-images #####
 RUN echo "Installing service dependencies ..."
 RUN cd $BUILD_HOME/code/
 WORKDIR $BUILD_HOME/code/

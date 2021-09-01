@@ -1,5 +1,7 @@
 ---
 platform: linux
+params:
+  DOCKERFILE: similar-images/Dockerfile-concourse
 image_resource:
   type: registry-image
   source:

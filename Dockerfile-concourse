@@ -9,7 +9,7 @@ RUN mkdir $BUILD_HOME/code
 RUN mkdir $BUILD_HOME/modules
 RUN mkdir $BUILD_HOME/creds
 
-## Get the sourc code
+## Get the source code
 COPY redisai $BUILD_HOME/code/RedisAI
 COPY redisearch $BUILD_HOME/code/RediSearch
 COPY similar-images $BUILD_HOME/code/similar-images

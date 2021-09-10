@@ -12,5 +12,6 @@ inputs:
   - name: similar-images
   - name: redisearch
   - name: redisai
+  - name: vector-similarity
 outputs:
   - name: image

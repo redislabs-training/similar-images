@@ -13,6 +13,7 @@ RUN mkdir $BUILD_HOME/creds
 COPY redisai $BUILD_HOME/code/RedisAI
 COPY redisearch $BUILD_HOME/code/RediSearch
 COPY similar-images $BUILD_HOME/code/similar-images
+COPY vector-similarity $BUILD_HOME/code/RediSearch/deps/VectorSimilarity
 
 # Install some packages
 RUN apt-get update
@@ -42,8 +43,6 @@ RUN cp ./bin/linux-x64-release/src/redisai_tensorflow.so $BUILD_HOME/modules/red
 ##### RediSearch #####
 ## Fix/get dependancies
 WORKDIR $BUILD_HOME/code/RediSearch/deps
-RUN git submodule add -f https://github.com/RedisLabsModules/VectorSimilarity.git
-RUN git submodule update --init --recursive
 RUN ./readies/bin/getpy2
 ## Build
 WORKDIR $BUILD_HOME/code/RediSearch
